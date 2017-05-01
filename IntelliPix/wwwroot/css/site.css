@@ -35,3 +35,11 @@ textarea {
         display: none;
     }
 }
+
+.row.first {
+    margin-top: 40px;
+}
+
+.text-lg {
+    height: 46px;
+}

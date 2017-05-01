@@ -27,6 +27,12 @@ namespace IntelliPix.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult Upload()
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult Error()
         {
             return View();
