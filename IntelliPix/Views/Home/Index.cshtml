@@ -1,8 +1,10 @@
-﻿@{
+﻿@model IList<IntelliPix.Models.BlobInfo>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="row first">
+<div class="row margin-top">
     <div class="col-sm-8">
         <form asp-controller="Home" asp-action="Upload" method="post">
             <div class="input-group">
@@ -25,4 +27,14 @@
             </span>
         </div>
     </div>
+</div>
+<div class="row margin-top">
+    @foreach (var blob in Model)
+    {
+        <div class="col-xs-6 col-md-3">
+            <a href="#" class="thumbnail">
+                <img src="@blob.ImageUri" title="@blob.Caption" />
+            </a>
+        </div>
+    }
 </div>
