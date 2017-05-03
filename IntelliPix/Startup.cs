@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
 
 namespace IntelliPix
 {
@@ -26,6 +28,7 @@ namespace IntelliPix
             // Add framework services.
             services.AddMvc();
             services.AddSingleton<IConfiguration>(Configuration);
+            services.AddScoped((svc) => new CloudStorageAccount(new StorageCredentials(Configuration["accountName"], Configuration["keyValue"]), true));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

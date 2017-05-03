@@ -6,11 +6,11 @@
 
 <div class="row margin-top">
     <div class="col-sm-8">
-        <form asp-controller="Home" asp-action="Upload" method="post">
+        <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Upload">
             <div class="input-group">
                 <label class="input-group-btn">
                     <label class="btn btn-primary btn-file btn-lg">
-                        Upload a photo <input type="file" style="display: none;">
+                        Upload a photo <input type="file" name="file" style="display: none;">
                     </label>
                 </label>
                 <input type="text" class="form-control text-lg" readonly>
@@ -33,7 +33,7 @@
     {
         <div class="col-xs-6 col-md-3">
             <a href="#" class="thumbnail">
-                <img src="@blob.ImageUri" title="@blob.Caption" />
+                <img src="@blob.ThumbnailUri" title="@blob.Caption" />
             </a>
         </div>
     }
