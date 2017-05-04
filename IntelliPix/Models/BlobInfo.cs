@@ -12,5 +12,7 @@ namespace IntelliPix.Models
         public string ThumbnailUri { get; set; }
 
         public string Caption { get; set; }
+
+        public string Tags { get; set; }
     }
 }

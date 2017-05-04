@@ -32,7 +32,7 @@
     @foreach (var blob in Model)
     {
         <div class="col-xs-6 col-md-3">
-            <a href="@blob.ImageUri" class="thumbnail" data-toggle="lightbox" data-gallery="photos-gallery">
+            <a href="@blob.ImageUri" class="thumbnail" data-toggle="lightbox" data-gallery="photos-gallery" data-title="@blob.Caption" data-footer="@blob.Tags">
                 <img src="@blob.ThumbnailUri" title="@blob.Caption" />
             </a>
         </div>

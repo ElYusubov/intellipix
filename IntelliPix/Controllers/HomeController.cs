@@ -40,10 +40,16 @@ namespace IntelliPix.Controllers
                     if (item.GetType() == typeof(CloudBlockBlob))
                     {
                         var blob = (CloudBlockBlob)item;
+                        await blob.FetchAttributesAsync();
+                        var caption = blob.Metadata.ContainsKey("Caption") ? blob.Metadata["Caption"] : blob.Name;
+                        var tags = blob.Metadata.Where(x => x.Key.StartsWith("tag"));
+
                         all.Add(new BlobInfo
                         {
                             ImageUri = blob.Uri.ToString(),
-                            ThumbnailUri = blob.Uri.ToString().Replace("/photos/", "/thumbnails/")
+                            ThumbnailUri = blob.Uri.ToString().Replace("/photos/", "/thumbnails/"),
+                            Caption = caption,
+                            Tags = string.Join(", ", tags.Select(x => x.Value))
                         });
                     }
                 }
