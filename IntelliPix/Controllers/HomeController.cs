@@ -8,16 +8,20 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using ImageSharp;
 using ImageSharp.Formats;
+using Microsoft.ProjectOxford.Vision;
+using System.Linq;
 
 namespace IntelliPix.Controllers
 {
     public class HomeController : Controller
     {
         private readonly CloudStorageAccount _account;
+        private readonly VisionServiceClient _vision;
 
-        public HomeController(CloudStorageAccount account)
+        public HomeController(CloudStorageAccount account, VisionServiceClient vision)
         {
             _account = account;
+            _vision = vision;
         }
 
         public async Task<IActionResult> Index()
@@ -92,6 +96,19 @@ namespace IntelliPix.Controllers
                             await thumbnail.UploadFromStreamAsync(outputStream);
                         }
                     }
+
+                    var features = new VisualFeature[] { VisualFeature.Description };
+                    var result = await _vision.AnalyzeImageAsync(photo.Uri.ToString(), features);
+
+                    photo.Metadata.Add("Caption", result.Description.Captions.First().Text);
+
+                    for (int i = 0; i < result.Description.Tags.Length; i++)
+                    {
+                        var key = $"tag{i}";
+                        photo.Metadata.Add(key, result.Description.Tags[i]);
+                    }
+
+                    await photo.SetMetadataAsync();
                 }
             }
             else
