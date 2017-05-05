@@ -10,6 +10,7 @@ using ImageSharp;
 using ImageSharp.Formats;
 using Microsoft.ProjectOxford.Vision;
 using System.Linq;
+using System;
 
 namespace IntelliPix.Controllers
 {
@@ -24,7 +25,7 @@ namespace IntelliPix.Controllers
             _vision = vision;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery]string q)
         {
             var blobClient = _account.CreateCloudBlobClient();
             var container = blobClient.GetContainerReference("photos");
@@ -41,22 +42,36 @@ namespace IntelliPix.Controllers
                     {
                         var blob = (CloudBlockBlob)item;
                         await blob.FetchAttributesAsync();
-                        var caption = blob.Metadata.ContainsKey("Caption") ? blob.Metadata["Caption"] : blob.Name;
-                        var tags = blob.Metadata.Where(x => x.Key.StartsWith("tag"));
 
-                        all.Add(new BlobInfo
+                        if (string.IsNullOrEmpty(q) || HasMatchingMetadata(blob, q))
                         {
-                            ImageUri = blob.Uri.ToString(),
-                            ThumbnailUri = blob.Uri.ToString().Replace("/photos/", "/thumbnails/"),
-                            Caption = caption,
-                            Tags = string.Join(", ", tags.Select(x => x.Value))
-                        });
+                            var caption = blob.Metadata.ContainsKey("Caption") ? blob.Metadata["Caption"] : blob.Name;
+                            var tags = blob.Metadata.Where(x => x.Key.StartsWith("tag"));
+
+                            all.Add(new BlobInfo
+                            {
+                                ImageUri = blob.Uri.ToString(),
+                                ThumbnailUri = blob.Uri.ToString().Replace("/photos/", "/thumbnails/"),
+                                Caption = caption,
+                                Tags = string.Join(", ", tags.Select(x => x.Value))
+                            });
+                        }
                     }
                 }
 
             } while (token != null);
 
+            ViewBag.q = q;
             return View(all);
+        }
+
+        private bool HasMatchingMetadata(CloudBlockBlob blob, string q)
+        {
+            foreach (var item in blob.Metadata)
+            {
+                if (item.Value.Contains(q)) return true;
+            }
+            return false;
         }
 
         public IActionResult About()
@@ -123,6 +138,11 @@ namespace IntelliPix.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Search(string q)
+        {
+            return RedirectToAction(nameof(Index), new { q });
         }
 
         public IActionResult Error()

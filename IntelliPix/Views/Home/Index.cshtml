@@ -18,14 +18,16 @@
         </form>
     </div>
     <div class="col-sm-3">
-        <div class="input-group">
-            <input type="search" class="form-control" placeholder="Search...">
-            <span class="input-group-btn">
-                <button type="submit" class="btn btn-primary">
-                    <span class="fa fa-search" aria-hidden="true"></span>
-                </button>
-            </span>
-        </div>
+        <form method="get" asp-controller="Home" asp-action="Search" >
+            <div class="input-group">
+                <input type="search" name="q" value="@ViewBag.q" class="form-control" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="fa fa-search" aria-hidden="true"></span>
+                    </button>
+                </span>
+            </div>
+        </form>
     </div>
 </div>
 <div class="row margin-top">
